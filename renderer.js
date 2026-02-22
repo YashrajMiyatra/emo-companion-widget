@@ -16,10 +16,22 @@ let sleepyTimer;
 let lastMousePoint = { x: 0, y: 0 };
 
 function setState(state, duration = null) {
-    if (currentState === state) return;
+    if (currentState === state) {
+        // If re-applying the same state, still update the timeout
+        if (duration) {
+            clearTimeout(interactionTimeout);
+            interactionTimeout = setTimeout(() => {
+                setState('idle');
+                if (screenEl.matches(':hover')) {
+                    setState('smile');
+                }
+            }, duration);
+        }
+        return;
+    }
 
     // Clear all existing state classes
-    screenEl.classList.remove('smile', 'laugh', 'angry', 'sad', 'sleepy', 'confused', 'surprised', 'love', 'error');
+    screenEl.classList.remove('smile', 'laugh', 'angry', 'sad', 'sleepy', 'confused', 'surprised', 'love', 'error', 'dizzy');
 
     currentState = state;
     if (state !== 'idle') screenEl.classList.add(state);
@@ -127,6 +139,12 @@ window.addEventListener('mouseup', () => {
     isDragging = false;
     document.body.style.cursor = 'pointer';
 
+    // Check if we were shaken before dropping
+    if (shakeAccumulator > 1500 || currentState === 'dizzy') {
+        setState('dizzy', 2000); // Shivering continues for 2 seconds after dropping
+    }
+    shakeAccumulator = 0;
+
     // If we're above the ground, start falling
     const groundY = screenBounds.y + screenBounds.height - currentBounds.height;
     if (currentBounds.y < groundY - 5) {
@@ -151,7 +169,8 @@ function physicsLoop() {
             isFalling = false;
             velocityY = 0;
         } else {
-            if (Math.abs(velocityY) > 10) {
+            // Only get surprised by the bounce if we aren't already dizzy
+            if (Math.abs(velocityY) > 10 && currentState !== 'dizzy') {
                 setState('surprised', 1000);
                 playTone(300, 'square', 0.1);
             }
@@ -174,9 +193,12 @@ let currentEyeX = 0;
 let currentEyeY = 0;
 const LERP_FACTOR = 0.12;
 
-// Petting Mechanic Variables
+// Interaction Mechanism Variables
 let pettingAccumulator = 0;
 let lastPettingTime = Date.now();
+
+let shakeAccumulator = 0;
+let lastShakeTime = Date.now();
 
 ipcRenderer.on('mouse-position', (event, { point, bounds, screenBounds: sb }) => {
     // Only update bounds if we aren't overriding them via physics
@@ -245,6 +267,23 @@ ipcRenderer.on('mouse-position', (event, { point, bounds, screenBounds: sb }) =>
         currentBounds.x = point.x - dragOffset.x;
         currentBounds.y = point.y - dragOffset.y;
         ipcRenderer.send('move-window', { x: currentBounds.x, y: currentBounds.y });
+
+        // --- Shake Physics Accumulator ---
+        if (distMoved > 10) {
+            shakeAccumulator += distMoved;
+            // Cap it to prevent overflow
+            if (shakeAccumulator > 3000) shakeAccumulator = 3000;
+            lastShakeTime = Date.now();
+
+            if (shakeAccumulator > 1000 && currentState !== 'dizzy') {
+                setState('dizzy', 4000); // Trigger dizziness immediately while holding
+                playSound(80, 'sawtooth', 0.6);
+            }
+        }
+    }
+
+    if (Date.now() - lastShakeTime > 300) {
+        shakeAccumulator = 0; // Rapidly decay if they stop shaking
     }
 });
 
@@ -383,7 +422,7 @@ document.body.addEventListener('contextmenu', (e) => {
 
 // Key bindings for extra emotions (requires widget click/focus!)
 window.addEventListener('keydown', (e) => {
-    if (mode !== 'face') return; // Don't trigger emotions if clock/weather is up
+    if (mode !== 'face' && mode !== 'typing') return; // Don't trigger emotions if clock/weather is up
 
     const key = e.key.toLowerCase();
 
@@ -395,43 +434,67 @@ window.addEventListener('keydown', (e) => {
     if (key === 'x') setState('error', 5000);
 
     // Advanced Modes
+    if (key === 'y') toggleTypingMode();
     if (key === 't') showClock();
     if (key === 'w') showWeather();
     if (key === 'm') toggleMusicVisualizer();
 });
 
 // ----------------------------------------------------
-// Global Typing / Reading Auto-Tracker
+// ----------------------------------------------------
+// Global Typing / Reading Auto-Tracker (Toggled manually)
 // ----------------------------------------------------
 let readingInterval;
 let typingTimeout;
 let readingX = -8;
 let readingY = -4;
 
-// Listen for global keypresses from main process
+let isGlobalTypingModeOn = false;
+
+// Listen for global OS-wide keypresses from main process
 ipcRenderer.on('global-keypress', () => {
-    if (mode === 'face' && (currentState === 'idle' || currentState === 'confused')) {
-        startTypingMode();
+    if (!isGlobalTypingModeOn) return; // Only listen if toggled ON
+
+    if (currentState === 'idle' || currentState === 'confused' || currentState === 'dizzy') {
+        startReadingAnimation();
     }
 
-    if (mode === 'typing') {
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            stopTypingModeAndGetConfused();
-        }, 1500);
-    }
+    // Reset the pause timeout every keystroke
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        stopReadingAndGetConfused();
+    }, 1500);
 });
 
-function startTypingMode() {
-    mode = 'typing';
+function toggleTypingMode() {
+    isGlobalTypingModeOn = !isGlobalTypingModeOn;
+
+    if (!isGlobalTypingModeOn) {
+        // Turning OFF
+        mode = 'face';
+        setState('idle');
+        clearTimeout(readingInterval);
+        clearTimeout(typingTimeout);
+    } else {
+        // Turning ON
+        mode = 'typing';
+        setState('confused'); // Immediately confused until they start typing
+
+        // Safety timeout just in case
+        clearTimeout(typingTimeout);
+    }
+}
+
+function startReadingAnimation() {
     setState('idle');
     resetSleepyTimer();
 
     readingX = -8;
     readingY = -4;
 
+    clearTimeout(readingInterval);
     const jump = () => {
-        if (mode !== 'typing') return;
+        if (!isGlobalTypingModeOn) return;
 
         if (currentState === 'idle') {
             if (Math.random() > 0.8 || readingX > 6) {
@@ -453,10 +516,9 @@ function startTypingMode() {
     jump();
 }
 
-function stopTypingModeAndGetConfused() {
+function stopReadingAndGetConfused() {
     clearTimeout(readingInterval);
-    if (mode === 'typing') {
-        mode = 'face';
+    if (isGlobalTypingModeOn) {
         setState('confused');
     }
 }

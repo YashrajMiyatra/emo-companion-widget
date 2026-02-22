@@ -226,7 +226,65 @@ body {
     width: 12px;
     border-radius: 5px;
     transform: translateY(9px);
-    /* Offset lower */
+}
+
+/* Dizzy (Fuzzy, Shivering) */
+.screen.dizzy .face-container {
+    gap: 24px;
+    animation: shake-dizzy 0.1s ease-in-out infinite;
+}
+
+.screen.dizzy .eye {
+    height: 30px;
+    width: 18px;
+    border-radius: 8px;
+    filter: blur(4px);
+    /* Make it fuzzy */
+    animation:
+        pulse-dizzy 0.8s ease-in-out infinite alternate,
+        eye-shiver 0.05s infinite alternate;
+}
+
+@keyframes shake-dizzy {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-3px, 2px);
+    }
+
+    50% {
+        transform: translate(3px, -2px);
+    }
+
+    75% {
+        transform: translate(-3px, -2px);
+    }
+
+    100% {
+        transform: translate(3px, 2px);
+    }
+}
+
+@keyframes eye-shiver {
+    0% {
+        transform: translate(2px, 2px);
+    }
+
+    100% {
+        transform: translate(-2px, -2px);
+    }
+}
+
+@keyframes pulse-dizzy {
+    0% {
+        transform: scale(0.8);
+    }
+
+    100% {
+        transform: scale(1.3);
+    }
 }
 
 /* Sleepy (Thin glowing slits) */

@@ -1,7 +1,6 @@
 const { app, BrowserWindow, screen, ipcMain, desktopCapturer } = require('electron');
 const path = require('path');
 const { uIOhook, UiohookKey } = require('uiohook-napi');
-
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;

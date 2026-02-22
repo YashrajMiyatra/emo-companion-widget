@@ -11,6 +11,7 @@ A lightweight, frameless, native desktop widget built with Electron.js that live
 
 ### 2. Physical & Environmental Reactions
 - **Petting**: Rapidly scrubbing your mouse back and forth across the top half of the widget (its "forehead") accumulates "petting" points. Reaching the threshold turns the robot's eyes into beating pink hearts 💕 and triggers a happy hum.
+- **Shake Physics**: While clicking and dragging the robot around your screen, rapidly shaking your mouse back and forth will make the robot dizzy and confused 😵‍💫.
 - **Laptop Battery Sync**: The widget hooks into the `navigator.getBattery()` API. If you unplug your laptop and the battery drops below 20%, the robot will look exhausted and become 'sad'. Plugging it back in makes it 'happy'.
 - **Blinking & Idle Saccades**: When left alone, the robot will randomly blink and perform small saccadic "glances" around the room to appear alive. 
 - **Sleep Mode**: If the mouse is not moved for 10 seconds, the robot's eyes will droop into thin lines as it falls asleep. Moving the mouse wakes it up instantly.
@@ -22,8 +23,7 @@ Click on the widget to focus it, then use the following keyboard shortcuts to ac
 - `t` **(Digital Clock)**: Briefly hides the robot's eyes and displays a glowing cyan digital clock of the current local system time.
 
 ### 4. Advanced Focus Modes
-- **Global Typing Tracker (Reading Sim)**: The widget runs a low-level OS hook (`uiohook-napi`). Whenever you type on your physical keyboard in *any* application, the robot instantly snaps to attention. Its eyes will dart back and forth, jumping lines like a typewriter, simulating that it is actively reading your code or text.
-- **Typing Pauses**: If you pause typing for exactly 1.5 seconds, the robot will briefly become "Confused" (misaligned eyes), as if it lost its place, until you resume typing or move your mouse.
+- `y` **(Reading / Typing Simulator)**: Toggles the robot into "Focus Mode". Its eyes will dart back and forth, jumping lines like a typewriter, simulating that it is actively reading along with code or text you are writing. Press `y` again to turn it off.
 - `m` **(Music Visualizer)**: Hooks into your system's raw audio loopback using Electron's `desktopCapturer`. The widget performs real-time Fast Fourier Transform (FFT) analysis on the audio stream. The left eye pulses to the **Bass (Low)** frequencies, and the right eye pulses to the **Treble (High)** frequencies. The eyes will also synchronously leap up and down to the beat.
 
 ### 5. Manual Emotional Overrides
@@ -43,7 +43,7 @@ Click the widget to focus it, then press:
 
 ### For Developers (Command Line)
 1. Clone the repository to your local machine.
-2. Open a terminal in the folder and run `npm install` to install dependencies (Electron and uiohook-napi).
+2. Open a terminal in the folder and run `npm install` to install dependencies (Electron).
 3. Run `npm start` to launch the widget.
 
 ## How to Close
