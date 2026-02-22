@@ -1,6 +1,6 @@
-# EMO Companion Desktop Widget
+# Wobbie Desktop Companion
 
-A lightweight, frameless, native desktop widget built with Electron.js that lives on your screen as a reactive, animated companion. The widget features a sleek, purely digital "two-eyes" aesthetic reminiscent of the EMO or Eilik robots, running entirely on web technologies (HTML, CSS, JS) encapsulated in a desktop app.
+A lightweight, frameless, native desktop widget built with Electron.js that lives on your screen as a reactive, animated companion. Wobbie features a sleek, purely digital "two-eyes" aesthetic reminiscent of the EMO or Eilik robots, running entirely on web Technologies (HTML, CSS, JS) encapsulated in a desktop app.
 
 ## Core Features & Mechanics
 
@@ -17,17 +17,17 @@ A lightweight, frameless, native desktop widget built with Electron.js that live
 - **Sleep Mode**: If the mouse is not moved for 10 seconds, the robot's eyes will droop into thin lines as it falls asleep. Moving the mouse wakes it up instantly.
 
 ### 3. Desktop Integration Modes
-Click on the widget to focus it, then use the following keyboard shortcuts to activate its built-in modules:
+Click on Wobbie to focus him, then use the following keyboard shortcuts to activate his built-in modules:
 
 - `w` **(Live Weather)**: Uses `ipinfo.io` to geolocate your IP, pings `open-meteo.com` for local weather data, and replaces its face with the current precise temperature and a weather icon (☀️, 🌧️, ☁️).
 - `t` **(Digital Clock)**: Briefly hides the robot's eyes and displays a glowing cyan digital clock of the current local system time.
 
 ### 4. Advanced Focus Modes
-- `y` **(Reading / Typing Simulator)**: Toggles the robot into "Focus Mode". Its eyes will dart back and forth, jumping lines like a typewriter, simulating that it is actively reading along with code or text you are writing. Press `y` again to turn it off.
-- `m` **(Music Visualizer)**: Hooks into your system's raw audio loopback using Electron's `desktopCapturer`. The widget performs real-time Fast Fourier Transform (FFT) analysis on the audio stream. The left eye pulses to the **Bass (Low)** frequencies, and the right eye pulses to the **Treble (High)** frequencies. The eyes will also synchronously leap up and down to the beat.
+- `y` **(Reading / Typing Simulator)**: Toggles Wobbie into "Focus Mode". His eyes will dart back and forth, jumping lines like a typewriter, simulating that he is actively reading along with code or text you are writing. Press `y` again to turn it off.
+- `m` **(Music Visualizer)**: Hooks into your system's raw audio loopback using Electron's `desktopCapturer`. Wobbie performs real-time Fast Fourier Transform (FFT) analysis on the audio stream. The left eye pulses to the **Bass (Low)** frequencies, and the right eye pulses to the **Treble (High)** frequencies. The eyes will also synchronously leap up and down to the beat.
 
 ### 5. Manual Emotional Overrides
-Click the widget to focus it, then press:
+Click Wobbie to focus him, then press:
 - `s`: **Sad** (Drooping eyes)
 - `c`: **Confused** (Mismatched eye sizes)
 - `l`: **Love** (Bouncing pink hearts)
@@ -47,4 +47,4 @@ Click the widget to focus it, then press:
 3. Run `npm start` to launch the widget.
 
 ## How to Close
-To close the widget, simply **Right-Click** anywhere on the robot's face.
+To close Wobbie, simply **Right-Click** anywhere on his face.
