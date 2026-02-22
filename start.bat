@@ -1,0 +1,3 @@
+@echo off
+echo Starting EMO Desktop Companion...
+call npm start

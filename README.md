@@ -35,7 +35,16 @@ Click the widget to focus it, then press:
 - `x`: **Error/Dead** (Yellow slanted eyes, "dead" state)
 
 ## Installation & Running
+
+### For Windows Users (Easiest Method)
+1. Download or clone this repository to your computer.
+2. Double-click the **`install.bat`** file. A black window will open, download all the necessary background files (Node modules), and then say "Press any key to continue".
+3. Whenever you want to launch the robot, just double-click **`start.bat`**! 
+
+### For Developers (Command Line)
 1. Clone the repository to your local machine.
-2. Run `npm install` to install dependencies (Electron and uiohook-napi).
+2. Open a terminal in the folder and run `npm install` to install dependencies (Electron and uiohook-napi).
 3. Run `npm start` to launch the widget.
-4. To close the widget, simply **Right-Click** anywhere on the robot's face.
+
+## How to Close
+To close the widget, simply **Right-Click** anywhere on the robot's face.
