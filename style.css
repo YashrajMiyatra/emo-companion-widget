@@ -1,0 +1,352 @@
+/* Clean reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: sans-serif;
+    user-select: none;
+}
+
+/* 
+ * The outer widget casing (Square with rounded corners)
+ */
+.widget-container {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #1c1c1c, #0a0a0a);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    position: relative;
+    border: 3px solid #2a2a2a;
+}
+
+/* 
+ * The inner black digital screen where eyes appear 
+ */
+.screen {
+    width: 120px;
+    height: 120px;
+    background-color: #030303;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.05);
+    /* Slight screen glow */
+}
+
+
+
+/* 
+ * The container that tracks the mouse (moved via JS) 
+ */
+.face-container {
+    display: flex;
+    gap: 24px;
+    /* Space between the two eyes */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* No transition here anymore - we are handling the smooth Lerp in JavaScript! */
+    margin-bottom: 12px;
+    /* EMO eyes sit slightly higher on the face */
+}
+
+/* Hidden Utility */
+.hidden {
+    display: none !important;
+}
+
+/* Digital Clock Style */
+.clock-display {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 42px;
+    font-weight: bold;
+    color: #00fff2;
+    text-shadow: 0 0 10px #00fff2, 0 0 20px rgba(0, 255, 242, 0.5);
+    z-index: 10;
+}
+
+/* Weather Display Style */
+.weather-display {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: #00fff2;
+    text-shadow: 0 0 10px #00fff2, 0 0 20px rgba(0, 255, 242, 0.5);
+    z-index: 10;
+}
+
+#weather-icon {
+    font-size: 36px;
+    text-shadow: none;
+    /* Emoyis don't glow well */
+}
+
+/* 
+ * The universal Base Eye Style (Idle)
+ */
+.eye {
+    width: 16px;
+    /* Narrow vertical */
+    height: 38px;
+    /* Tall pill shape */
+    background-color: #00fff2;
+    /* EMO neon cyan */
+    border-radius: 8px;
+    /* Smooth rounded corners, not fully circular */
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+        0 0 6px #00fff2,
+        0 0 12px rgba(0, 255, 242, 0.5);
+    /* Glowing effect */
+}
+
+/* Blink modifier class (added rapidly by JS to simulate blinking) */
+.eye.blink {
+    transform: scaleY(0.1) !important;
+}
+
+/* ---------------------------------------------------- */
+/* EMOTIONAL STATES - Modifier classes added via JS     */
+/* ---------------------------------------------------- */
+
+/* Smile (Squished horizontal arches) */
+.screen.smile .face-container {
+    gap: 27px;
+    transform: translateY(-3px);
+}
+
+.screen.smile .eye {
+    height: 15px;
+    width: 30px;
+    border-radius: 100px 100px 30px 30px;
+    /* Flat bottom, arched top */
+    background-color: #00fff2;
+}
+
+/* Laughing (Floating, happier jumping) */
+.screen.laugh .face-container {
+    animation: jump-laugh 0.4s ease-in-out infinite alternate;
+}
+
+.screen.laugh .eye {
+    height: 15px;
+    width: 30px;
+    border-radius: 100px 100px 10px 10px;
+}
+
+@keyframes jump-laugh {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Angry (Slanted tightly inwards) */
+.screen.angry .face-container {
+    gap: 18px;
+}
+
+.screen.angry .eye {
+    background-color: #ff2a00;
+    /* Red angry eyes */
+    box-shadow: 0 0 6px #ff2a00, 0 0 12px rgba(255, 42, 0, 0.5);
+    height: 30px;
+    width: 21px;
+    border-radius: 4px;
+}
+
+.screen.angry .eye.left {
+    transform: rotate(35deg) skewX(20deg);
+}
+
+.screen.angry .eye.right {
+    transform: rotate(-35deg) skewX(-20deg);
+}
+
+/* Sad (Drooping outwards, shorter) */
+.screen.sad .face-container {
+    gap: 27px;
+    transform: translateY(6px);
+}
+
+.screen.sad .eye {
+    height: 24px;
+    width: 15px;
+    border-radius: 15px 15px 4px 4px;
+    opacity: 0.8;
+}
+
+.screen.sad .eye.left {
+    transform: rotate(-25deg);
+}
+
+.screen.sad .eye.right {
+    transform: rotate(25deg);
+}
+
+/* Confused (One eye big, one eye small) */
+.screen.confused .face-container {
+    gap: 21px;
+}
+
+.screen.confused .eye.left {
+    height: 36px;
+    width: 19px;
+    border-radius: 8px;
+}
+
+.screen.confused .eye.right {
+    height: 18px;
+    width: 12px;
+    border-radius: 5px;
+    transform: translateY(9px);
+    /* Offset lower */
+}
+
+/* Sleepy (Thin glowing slits) */
+.screen.sleepy .face-container {
+    gap: 24px;
+    transform: translateY(12px);
+}
+
+.screen.sleepy .eye {
+    height: 4px;
+    width: 21px;
+    border-radius: 6px;
+    opacity: 0.6;
+    animation: breathe-sleep 3s ease-in-out infinite alternate;
+}
+
+@keyframes breathe-sleep {
+    0% {
+        opacity: 0.3;
+        transform: scaleY(0.8);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: scaleY(1.5);
+    }
+}
+
+/* Surprised (Wide open dots) */
+.screen.surprised .face-container {
+    gap: 24px;
+    transform: translateY(-6px);
+}
+
+.screen.surprised .eye {
+    height: 27px;
+    width: 27px;
+    border-radius: 50%;
+    /* Perfect circles due to shock */
+}
+
+/* Error/Dizzy (Slanted X marks or tilted misaligned eyes) */
+.screen.error .face-container {
+    gap: 27px;
+}
+
+.screen.error .eye {
+    background-color: #ffea00;
+    /* Yellow caution */
+    box-shadow: 0 0 6px #ffea00, 0 0 12px rgba(255, 234, 0, 0.5);
+    height: 9px;
+    width: 24px;
+}
+
+.screen.error .eye.left {
+    transform: rotate(45deg);
+    opacity: 0.8;
+}
+
+.screen.error .eye.right {
+    transform: rotate(-45deg);
+    opacity: 0.8;
+}
+
+/* Love (Pink Hearts) */
+.screen.love .face-container {
+    gap: 24px;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.screen.love .eye {
+    background-color: transparent;
+    box-shadow: none;
+    width: 24px;
+    height: 24px;
+    /* pure CSS heart shape trick */
+}
+
+.screen.love .eye::before,
+.screen.love .eye::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 21px;
+    background-color: #ff007f;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 0 10px #ff007f;
+}
+
+.screen.love .eye::before {
+    left: 12px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+}
+
+.screen.love .eye::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+
+    15% {
+        transform: scale(1.15);
+    }
+
+    30% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.15);
+    }
+
+    60% {
+        transform: scale(1);
+    }
+}

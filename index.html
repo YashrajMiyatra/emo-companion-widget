@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>EMO Desktop Widget</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- The main draggable screen casing -->
+    <div class="widget-container" id="widget">
+        <!-- The inner black screen -->
+        <div class="screen">
+            <!-- Container for the digital eyes, handles independent translations (squash/stretch) -->
+            <div class="face-container">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+            </div>
+
+            <!-- Digital Clock Display -->
+            <div class="clock-display hidden" id="clock">12:00</div>
+
+            <!-- Weather Display -->
+            <div class="weather-display hidden" id="weather">
+                <span id="weather-icon">☀️</span>
+                <span id="weather-temp">--°C</span>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+
+</html>
